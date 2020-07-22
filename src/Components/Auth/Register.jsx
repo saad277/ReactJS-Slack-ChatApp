@@ -14,7 +14,8 @@ class Register extends Component {
         username: "",
         email: "",
         password: "",
-        passwordConfirmation: ""
+        passwordConfirmation: "",
+        errors: []
 
     }
 
@@ -26,17 +27,100 @@ class Register extends Component {
         })
     }
 
+    isFormValid = () => {
+
+        let errors = []
+        let error;
+
+        if (this.isFormEmpty(this.state)) {
+
+            error = { message: "Fill All Fields" }
+
+            this.setState({
+
+                errors: [...this.state.errors, error]
+            })
+
+            return false
+
+        }
+        else if (!this.isPasswordValid(this.state)) {
+
+            error = { message: "Invalid Password" }
+
+            this.setState({
+
+                errors: [...this.state.errors, error]
+            })
+
+            return false
+
+        }
+        else {
+
+            return true
+        }
+    }
+
+    isFormEmpty = ({ username, password, email, passwordConfirmation }) => {
+
+
+        return !username || !password || !email || !passwordConfirmation
+
+
+    }
+
+    isPasswordValid = ({ password, passwordConfirmation }) => {
+
+        if (password.length < 6 || passwordConfirmation.length < 6) {
+
+            return false
+        }
+
+        else if (password !== passwordConfirmation) {
+
+            return false
+        }
+
+        else {
+
+            return true
+        }
+
+    }
+
+    displayErrors = (errors) => {
+
+        return errors.map((x, i) => {
+
+            return (
+                <p>{x.message}</p>
+            )
+        })
+
+
+
+
+    }
+
+
     handleSubmit = (event) => {
 
-        event.preventDefault()
+        if (this.isFormValid()) {
 
-        firebase.auth()
-            .createUserWithEmailAndPassword(this.state.email, this.state.password)
-            .then((createdUser) => {
 
-                console.log(createdUser)
-            })
-            .catch((error) => console.log(error))
+
+
+            event.preventDefault()
+
+            firebase.auth()
+                .createUserWithEmailAndPassword(this.state.email, this.state.password)
+                .then((createdUser) => {
+
+                    console.log(createdUser)
+                })
+                .catch((error) => console.log(error))
+        }
     }
 
     render() {
@@ -81,7 +165,7 @@ class Register extends Component {
                                 name="password"
                                 icon="lock"
                                 iconPosition="left"
-                                placeholder="Email"
+                                placeholder="Password"
                                 onChange={this.handleChange}
                                 value={password}
                             />
@@ -101,6 +185,13 @@ class Register extends Component {
                         </Segment>
 
                     </Form>
+
+                    {this.state.errors.length > 0 ?
+                        <Message error>
+                            <h3>Error</h3>
+                            {this.displayErrors(this.state.errors)}
+                        </Message> : null}
+
                     <Message>Already a User ?
                         <Link to="/login">Login</Link>
                     </Message>
