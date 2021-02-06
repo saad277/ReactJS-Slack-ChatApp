@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react";
 
 export const displayErrors = (errors) => {
-  return errors.map((x, i) => {
-    return <p>{x.message}</p>;
+  return errors.map((err, i) => {
+    return <p>{err.message}</p>;
   });
 };
 
