@@ -1,10 +1,12 @@
 import React from "react";
-import { Dropdown, Grid, Header, Icon } from "semantic-ui-react";
-import { connect } from "react-redux";
+import { Dropdown, Grid, Header, Icon, Image } from "semantic-ui-react";
+
 
 import firebase from "../../firebase";
 
-const UserPanel = () => {
+const UserPanel = (props) => {
+  const { currentUser } = props;
+
   const handleSignOut = () => {
     firebase
       .auth()
@@ -18,7 +20,8 @@ const UserPanel = () => {
         key: "user",
         text: (
           <span>
-            Signed in as <strong>User</strong>{" "}
+            Signed in as
+            <strong> {currentUser.displayName}</strong>
           </span>
         ),
         disable: true,
@@ -42,12 +45,19 @@ const UserPanel = () => {
             <Icon name="code" />
             <Header.Content>Dev Chat</Header.Content>
           </Header>
-        </Grid.Row>
 
-        {/* User Drop Down*/}
-        <Header inverted as="h4" style={{ padding: "0.25em" }}>
-          <Dropdown trigger={<span>User</span>} options={dropDownOptions()} />
-        </Header>
+          <Header inverted as="h4" style={{ padding: "0.25em" }}>
+            <Dropdown
+              trigger={
+                <span>
+                  <Image src={currentUser.photoURL} spaced="right" avatar />
+                  {currentUser.displayName}
+                </span>
+              }
+              options={dropDownOptions()}
+            />
+          </Header>
+        </Grid.Row>
       </Grid.Column>
     </Grid>
   );
