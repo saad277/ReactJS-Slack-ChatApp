@@ -41,6 +41,7 @@ class Login extends Component {
       .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then((signedInUser) => {
         console.log(signedInUser);
+        this.setState({ errors: [], loading: false });
       })
       .catch((err) => {
         console.log(err);
@@ -64,7 +65,7 @@ class Login extends Component {
         <Grid.Column style={{ maxWidth: 450 }}>
           <Header as="h1" icon color="violet" textAlign="center">
             <Icon name="code branch" color="violet" />
-            <h2>Login To DevChat</h2>
+            <h1>Login To DevChat</h1>
           </Header>
           <Form size="large" onSubmit={this.handleSubmit}>
             <Segment stacked>
@@ -97,7 +98,7 @@ class Login extends Component {
                 color="violet"
                 fluid
                 size="large"
-                className={loading ? "disabled" : ""}
+                className={loading ? "loading" : ""}
               >
                 Submit
               </Button>
@@ -112,7 +113,7 @@ class Login extends Component {
           ) : null}
 
           <Message>
-            Don't have an account ?<Link to="/register">Register</Link>
+            Don't have an account ? <Link to="/register">Register</Link>
           </Message>
         </Grid.Column>
       </Grid>

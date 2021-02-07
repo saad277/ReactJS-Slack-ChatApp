@@ -32,7 +32,6 @@ class Register extends Component {
   };
 
   isFormValid = () => {
-    let errors = [];
     let error;
 
     if (this.isFormEmpty(this.state)) {
@@ -193,7 +192,7 @@ class Register extends Component {
                 color="orange"
                 fluid
                 size="large"
-                className={loading ? "disabled" : ""}
+                className={loading ? "loading" : ""}
               >
                 Submit
               </Button>
@@ -208,7 +207,7 @@ class Register extends Component {
           ) : null}
 
           <Message>
-            Already a User ?<Link to="/login">Login</Link>
+            Already a User ? <Link to="/login">Login</Link>
           </Message>
         </Grid.Column>
       </Grid>
