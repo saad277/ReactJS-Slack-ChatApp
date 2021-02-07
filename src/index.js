@@ -12,7 +12,7 @@ import firebase from "./firebase";
 import { Provider, connect } from "react-redux";
 
 import store from "./Store/store";
-import { setUser } from "./Store/actions";
+import { setUser, clearUser } from "./Store/actions";
 
 import Login from "./Components/Auth/Login";
 import App from "./Components/App.jsx";
@@ -22,7 +22,7 @@ import { Spinner } from "./Components/Spinner";
 import "semantic-ui-css/semantic.min.css";
 
 const Root = (props) => {
-  const { setUser, isLoading } = props;
+  const { setUser, isLoading, clearUser } = props;
 
   const History = useHistory();
 
@@ -32,6 +32,9 @@ const Root = (props) => {
       if (user) {
         setUser(user);
         History.push("/");
+      } else {
+        History.push("/login");
+        clearUser();
       }
     });
 
@@ -58,6 +61,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setUser,
+  clearUser,
 };
 
 const RootWithRedux = connect(mapStateToProps, mapDispatchToProps)(Root);
