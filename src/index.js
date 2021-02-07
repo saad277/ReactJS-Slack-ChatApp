@@ -1,30 +1,55 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import App from "./Components/App.jsx";
 import * as serviceWorker from "./serviceWorker";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useHistory,
+  Redirect,
+} from "react-router-dom";
+import firebase from "./firebase";
+import { Provider } from "react-redux";
 
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import store from "./Store/store";
 
 import Login from "./Components/Auth/Login";
+import App from "./Components/App.jsx";
 import Register from "./Components/Auth/Register";
 
 import "semantic-ui-css/semantic.min.css";
 
 const Root = () => {
+  const History = useHistory();
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      console.log(user);
+      if (user) {
+        History.push("/");
+      }
+    });
+
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <Router>
-      <Switch>
-        <Route exact path="/" component={App} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-      </Switch>
-    </Router>
+    <Switch>
+      <Route exact path="/" component={App} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Redirect to="/" />
+    </Switch>
   );
 };
 
 ReactDOM.render(
   <React.StrictMode>
-    <Root />
+    <Router>
+      <Provider store={store}>
+        <Root />
+      </Provider>
+    </Router>
   </React.StrictMode>,
   document.getElementById("root")
 );
