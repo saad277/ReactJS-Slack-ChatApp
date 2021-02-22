@@ -86,7 +86,7 @@ class Register extends Component {
         .auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password)
         .then((createdUser) => {
-          console.log(createdUser);
+      
 
           createdUser.user
             .updateProfile({
@@ -97,11 +97,11 @@ class Register extends Component {
             })
             .then(() => {
               this.saveUser(createdUser).then(() => {
-                console.log("user saved");
+                
               });
             })
             .catch((error) => {
-              console.log(error);
+              
 
               this.setState({
                 errors: [...this.state.errors, error],
@@ -112,7 +112,7 @@ class Register extends Component {
           this.setState({ loading: false });
         })
         .catch((error) => {
-          console.log(error);
+         
           this.setState({
             errors: [...this.state.errors, error],
             loading: false,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Menu, Icon, Modal, Form, Input, Button } from "semantic-ui-react";
 import firebase from "../../firebase";
 
@@ -7,18 +7,30 @@ const CHANNEL_REF = firebase.database().ref("channels");
 const Channels = (props) => {
   const { currentUser } = props;
 
-  const [channels, setChannel] = useState([]);
+  const [channels, setChannels] = useState([]);
   const [modal, setModal] = useState(false);
   const [channelName, setChannelName] = useState("");
   const [channelDetails, setChannelDetails] = useState("");
+
+  useEffect(() => {
+    addListeners();
+  }, []);
+
+  console.log(channels);
+
+  const addListeners = () => {
+    let loadedChannels = [];
+    CHANNEL_REF.on("child_added", (snap) => {
+      loadedChannels.push(snap.val());
+
+      setChannels(loadedChannels);
+    });
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     if (isFormValid()) {
-      console.log("channel added");
-      console.log(channelDetails, channelDetails);
-
       addChannel();
     }
   };
@@ -43,13 +55,11 @@ const Channels = (props) => {
     CHANNEL_REF.child(key)
       .update(newChannel)
       .then(() => {
-        setChannel("");
+        setChannelName("");
         setChannelDetails("");
         setModal(false);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   return (
@@ -61,7 +71,18 @@ const Channels = (props) => {
           </span>{" "}
           ({channels.length}) <Icon name="add" onClick={() => setModal(true)} />
         </Menu.Item>
-        {/* Channels  */}
+        {channels.map((channel) => {
+          return (
+            <Menu.Item
+              key={channel.id}
+              onClick={() => console.log(channel)}
+              name={channel.name}
+              style={{ opacity: 0.7 }}
+            >
+              #{channel.name}
+            </Menu.Item>
+          );
+        })}
       </Menu.Menu>
 
       <Modal basic open={modal}>
