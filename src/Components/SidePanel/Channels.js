@@ -14,10 +14,24 @@ const Channels = (props) => {
   const [modal, setModal] = useState(false);
   const [channelName, setChannelName] = useState("");
   const [channelDetails, setChannelDetails] = useState("");
+  const [firstLoaded, setFirstLoaded] = useState(false);
+  const [activeChannel, setActiveChannel] = useState("");
 
   useEffect(() => {
     addListeners();
+
+    return () => {
+      CHANNEL_REF.off();
+    };
   }, []);
+
+  useEffect(() => {
+    if (firstLoaded && channels.length) {
+      setCurrentChannel(channels[0]);
+      setActiveChannel(channels[0].id);
+      setFirstLoaded(false);
+    }
+  }, [firstLoaded]);
 
   const addListeners = () => {
     let loadedChannels = [];
@@ -25,6 +39,7 @@ const Channels = (props) => {
       loadedChannels.push(snap.val());
 
       setChannels(loadedChannels);
+      setFirstLoaded(true);
     });
   };
 
@@ -64,6 +79,7 @@ const Channels = (props) => {
   };
 
   const changeCurrentChannel = (channel) => {
+    setActiveChannel(channel.id);
     setCurrentChannel(channel);
   };
 
@@ -83,6 +99,7 @@ const Channels = (props) => {
               onClick={() => changeCurrentChannel(channel)}
               name={channel.name}
               style={{ opacity: 0.7 }}
+              active={channel.id === activeChannel}
             >
               #{channel.name}
             </Menu.Item>
