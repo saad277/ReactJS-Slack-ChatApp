@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Menu, Icon, Modal, Form, Input, Button } from "semantic-ui-react";
+import { connect } from "react-redux";
+
 import firebase from "../../firebase";
+import { setCurrentChannel } from "../../Store/actions";
 
 const CHANNEL_REF = firebase.database().ref("channels");
 
 const Channels = (props) => {
-  const { currentUser } = props;
+  const { currentUser, setCurrentChannel } = props;
 
   const [channels, setChannels] = useState([]);
   const [modal, setModal] = useState(false);
@@ -15,8 +18,6 @@ const Channels = (props) => {
   useEffect(() => {
     addListeners();
   }, []);
-
-  console.log(channels);
 
   const addListeners = () => {
     let loadedChannels = [];
@@ -62,6 +63,10 @@ const Channels = (props) => {
       .catch((err) => {});
   };
 
+  const changeCurrentChannel = (channel) => {
+    setCurrentChannel(channel);
+  };
+
   return (
     <>
       <Menu.Menu>
@@ -75,7 +80,7 @@ const Channels = (props) => {
           return (
             <Menu.Item
               key={channel.id}
-              onClick={() => console.log(channel)}
+              onClick={() => changeCurrentChannel(channel)}
               name={channel.name}
               style={{ opacity: 0.7 }}
             >
@@ -119,4 +124,8 @@ const Channels = (props) => {
   );
 };
 
-export default Channels;
+const mapDispatchToProps = {
+  setCurrentChannel,
+};
+
+export default connect(null, mapDispatchToProps)(Channels);

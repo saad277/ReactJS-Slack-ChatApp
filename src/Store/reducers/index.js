@@ -1,3 +1,4 @@
 import AuthReducer from "./authReducer";
+import ChannelReducer from "./channelReducer";
 
-export { AuthReducer };
+export { AuthReducer, ChannelReducer };
